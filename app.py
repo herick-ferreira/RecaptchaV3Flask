@@ -54,11 +54,11 @@ def add_contact():
     verify_response = requests.post(f'{VERIFY_URL}?secret={SECRET_KEY}&response={secret_response}')
 
     if verify_response.status_code != 200:
-        print(f"Não foi possível a autenticação com este usuário... - {datetime.now(tz=tz):%d/%m/%Y %H:%M:%S}")
+        print(f"Unable to authenticate with this user... - {datetime.now(tz=tz):%d/%m/%Y %H:%M:%S}")
         return jsonify({'message':'False'})
 
     if not 'success' in verify_response.json().keys():
-        print(f"Não foi possível a autenticação com este usuário... - {datetime.now(tz=tz):%d/%m/%Y %H:%M:%S}")
+        print(f"Unable to authenticate with this user... - {datetime.now(tz=tz):%d/%m/%Y %H:%M:%S}")
         return jsonify({'message':'False'})
 
     if not verify_response.json()['success'] or verify_response.json()['score'] < 0.5:
