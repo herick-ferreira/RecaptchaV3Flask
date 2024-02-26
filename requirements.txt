@@ -1,0 +1,7 @@
+requests
+Jinja2
+flask
+Werkzeug
+beautifulsoup
+gunicorn==20.0.4
+pyOpenSSL
