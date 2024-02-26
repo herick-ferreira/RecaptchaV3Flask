@@ -1,0 +1,493 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.google.com/recaptcha/api.js?&render=explici"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script>
+
+
+
+        // Alert snackbar
+
+        function changeSnackbar(text, color) {
+
+            const snackbar = document.getElementById("snackbar");
+            snackbar.innerHTML = text;
+
+            console.log(snackbar.innerHTML);
+
+            snackbar.setAttribute("style", `background-color:${color}; color:black; display:flex`);
+
+            setTimeout(function () {
+
+                snackbar.setAttribute("style", `display:none`)
+
+            }, 3500);
+        }
+
+
+
+
+
+
+
+        // Submit Forms
+        function submitForm(token) {
+
+            var button_submit = document.getElementById("submit-btn")
+            button_submit.disabled = true
+
+
+            var name = document.getElementById("name");
+            var phone = document.getElementById("phone");
+            var email = document.getElementById("email");
+            var subject = document.getElementById("subject");
+            var message = document.getElementById("message");
+            var send_messages = document.getElementById("send-messages");
+
+            var toast = document.getElementById("snackbar");
+
+            if (token === '') {
+                console.log('Pass reCAPTCHA.');
+                button_submit.disabled = false
+
+                window.location.replace("/");
+                changeSnackbar('Error in captcha', 'red')
+                return;
+            }
+
+            else if (name.value === '') {
+
+                console.log('Request failed');
+
+
+                button_submit.disabled = false
+
+                window.location.replace("/");
+                changeSnackbar('Error in send data!', 'red')
+                return;
+
+
+            }
+
+
+
+            var data = {
+                name: name.value,
+                phone: phone.value,
+                email: email.value,
+                subject: subject.value,
+                message: message.value,
+                send_messages: send_messages.checked,
+                'g-recaptcha-response': token
+            };
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '/add-contact', true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+            xhr.send(JSON.stringify(data));
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('Request successful');
+                    const message = JSON.parse(xhr.responseText).message;
+
+                    if (message === "True") {
+                        name.value = "";
+                        phone.value = "";
+                        email.value = "";
+                        subject.value = "";
+                        message.value = "";
+                        send_messages.checked = false;
+
+                        window.location.replace("/");
+                        changeSnackbar('Data sent successfully', 'green')
+
+
+
+                    } else {
+
+                        window.location.replace("/");
+                        changeSnackbar('Unable to send data!', 'red')
+
+                    }
+
+                } else {
+                    window.location.replace("/");
+                    changeSnackbar('Unable to send data!', 'red')
+
+                };
+
+
+                button_submit.disabled = false
+
+            }
+        }
+
+    </script>
+
+
+
+    <style>
+        input::placeholder {
+            color: var(--color-text)
+        }
+
+
+        @supports (-webkit-background-clip: text) or (-moz-background-clip:text) or (background-clip:text) {
+
+            body {
+                background: linear-gradient(0deg, rgb(73, 79, 78) 0%, rgb(173, 183, 183) 72%, rgb(45, 68, 198) 92%);
+            }
+
+
+
+            #submit-btn {
+                width: 10rem;
+                height: 2.8rem;
+                color: #fff;
+                font-size: 1.6rem;
+                border-radius: 5px;
+                padding: 10px 25px;
+                font-family: 'Lato', sans-serif;
+                font-weight: 500;
+                background: transparent;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                display: inline-block;
+                box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+                    7px 7px 20px 0px rgba(0, 0, 0, .1),
+                    4px 4px 5px 0px rgba(0, 0, 0, .1);
+                outline: none;
+            }
+
+
+
+            #submit-btn {
+                background: linear-gradient(90deg, rgba(95, 126, 125, 1) 0%, rgb(9, 26, 121) 20%, rgb(45, 68, 198) 92%);
+                line-height: 42px;
+                padding: 0;
+                border: none;
+            }
+
+            #submit-btn span {
+                position: relative;
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+
+            #submit-btn:before,
+            #submit-btn:after {
+                position: absolute;
+                content: "";
+                right: 0;
+                bottom: 0;
+                background: rgb(17, 62, 166);
+                box-shadow:
+                    -7px -7px 20px 0px rgba(255, 255, 255, .9),
+                    -4px -4px 5px 0px rgba(255, 255, 255, .9),
+                    7px 7px 20px 0px rgba(0, 0, 0, .2),
+                    4px 4px 5px 0px rgba(0, 0, 0, .3);
+                transition: all 0.3s ease;
+            }
+
+            #submit-btn:before {
+                height: 0%;
+                width: 2px;
+            }
+
+            #submit-btn:after {
+                width: 0%;
+                height: 2px;
+            }
+
+            #submit-btn:hover {
+                color: rgb(17, 166, 146);
+                background: transparent;
+            }
+
+            #submit-btn:hover:before {
+                height: 100%;
+            }
+
+            #submit-btn:hover:after {
+                width: 100%;
+            }
+
+            #submit-btn span:before,
+            #submit-btn span:after {
+                position: absolute;
+                content: "";
+                left: 0;
+                top: 0;
+                background: rgb(17, 166, 146);
+                box-shadow:
+                    -7px -7px 20px 0px rgba(255, 255, 255, .9),
+                    -4px -4px 5px 0px rgba(255, 255, 255, .9),
+                    7px 7px 20px 0px rgba(0, 0, 0, .2),
+                    4px 4px 5px 0px rgba(0, 0, 0, .3);
+                transition: all 0.3s ease;
+            }
+
+            #submit-btn span:before {
+                width: 2px;
+                height: 0%;
+            }
+
+            #submit-btn span:after {
+                height: 2px;
+                width: 0%;
+            }
+
+            #submit-btn span:hover:before {
+                height: 100%;
+            }
+
+            #submit-btn span:hover:after {
+                width: 100%;
+            }
+
+
+
+            footer {
+                background-color: rgb(143, 143, 165);
+                width: 100%;
+                padding: 2rem;
+                height: fit-content;
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                border-top: .6rem solid rgb(38, 43, 67);
+                border-bottom: .6rem solid rgb(41, 38, 67);
+                border-top-right-radius: 1.3rem;
+                border-top-left-radius: 1.3rem;
+                font-size: 1rem;
+            }
+
+
+            @media (max-width: 600px) {
+
+                .content-footer {
+                    font-size: 1rem !important;
+                }
+
+            }
+
+            .header-footer {
+                font-size: 1.5rem;
+                font-weight: 600;
+
+            }
+
+            .contact-footer1 {
+                width: 20%;
+                height: 80%;
+
+            }
+
+            .contact-footer2 {
+                width: 20%;
+                height: 80%;
+
+            }
+
+            .content-footer {
+                font-size: 1.3rem;
+            }
+
+
+        }
+
+
+
+
+        button {
+
+            border-radius: .7rem;
+            padding: .7rem;
+            background-color: #a9d6d4;
+            font-weight: 700;
+
+        }
+
+
+
+        #snackbar {
+
+            display: none;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            border-width: 7rem;
+            font-weight: 700;
+            padding: 1vw;
+            position: absolute;
+            z-index: 10000;
+            font-size: .7rem;
+            border: solid;
+            border-color: silver;
+            top: 2px;
+            right: 0px;
+            font: bold
+        }
+
+
+
+
+
+        #contatos {
+            font-size: 2.7rem;
+            margin-bottom: 1.2rem;
+            text-align: center;
+        }
+
+
+        #contact-form {
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 60%;
+            margin-left: 20%;
+        }
+
+        @media (max-width: 712px) {
+            #contact-form {
+                width: 90%;
+                margin-left: 5%;
+            }
+        }
+
+        #header-contact {
+            margin-top: 5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            margin-left: 5%;
+        }
+
+        #contact-form>input {
+            margin: .6rem;
+            width: 100%;
+            background-color: var(--color-bg-content);
+            border-radius: .6rem;
+            border: .4rem solid silver;
+        }
+
+        textarea {
+            width: 100%;
+            height: 10rem;
+            border-radius: 1rem;
+            border: .4rem solid silver;
+            margin: .6rem;
+            background-color: var(--color-bg-content);
+        }
+
+        textarea::placeholder {
+            color: var(--color-text);
+        }
+
+        #div-send-messages {
+
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 1rem;
+            color: white;
+        }
+
+        #div-send-messages>input {
+            width: 1rem;
+            height: 1rem;
+            margin-right: 1rem;
+        }
+
+        input {
+            padding: .3rem;
+        }
+    </style>
+
+</head>
+
+<div id="snackbar"></div>
+
+
+
+<body>
+
+
+
+    <div id="header-contact">
+
+        <h3>Describe your questions or interests below. Appreciate</h3>
+
+    </div>
+
+
+    <div>
+        <h3 id="contatos">Contact Form</h3>
+    </div>
+
+    <form id="contact-form">
+
+        <input type="text" placeholder="Name" required id="name" name="name">
+        <input type="text" placeholder="Phone" id="phone" name="phone">
+        <input type="email" size="30" type="text" placeholder="E-mail" id="email" name="email">
+        <input type="text" placeholder="Subject" id="subject" name="subject">
+        <textarea cols="1" placeholder="Message" id="message" name="message"></textarea>
+
+        <div id="div-send-messages">
+            <input type="checkbox" id="send-messages" value="off" name="enviar-menssagens" />
+            <label for="label-enviar-menssagens">Yes, I would like to receive emails, messages or calls about articles,
+                news, trends or offers.
+                Consent can be withdrawn at any time by clicking on the unsubscribe link present in all email
+                communications.</label>
+        </div>
+
+        <div id="div-submit-contact">
+
+            <button data-callback='submitForm' id="submit-btn" class="g-recaptcha btn btn-primary"
+                data-sitekey="{{ SITE_KEY }}"><span>Send</span></button>
+
+        </div>
+
+    </form>
+
+
+    </section>
+
+    </section>
+    <div id="snackbar"></div>
+
+
+    <footer>
+
+        <div class="row mb-4" style="font: bold; font-weight: 600; margin-top: 2rem;">©{{year}}|</div>
+    </footer>
+
+
+
+
+</body>
+
+
+
+
+</html>
